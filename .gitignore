@@ -1,0 +1,17 @@
+# .gitignore — 排除生成物与本地环境文件
+# 生成物（流水线产物，永不入库）
+480P/
+720P/
+流水线/
+成片/
+05_TTS语音/
+06_H3prompt/
+07_成片/
+generated_*.jsonl
+
+# 本地环境
+.env
+*.log
+qrcode*.png
+__pycache__/
+*.pyc
