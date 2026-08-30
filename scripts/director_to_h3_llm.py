@@ -26,7 +26,8 @@ SYSTEM = """你是 MiniMax H3 视频生成提示词专家。把中文视觉导�
 5. POV 段（标记为第一人称）：开头写 "A first-person POV at a neon-lit control console, the narrator's own hands visible in frame operating holographic panels"，强调从叙述者视角看手部操作，无脸无全身
 6. 非 POV 段：写 "No person appears in this shot"
 7. 赛博朋克太空工业风：cyberpunk space industrial style, neon-drenched city skyline at night (rain-slick streets, neon signs, holographic billboards), metallic mechanical surfaces (riveted steel plates, pipes, hydraulic machinery), information interfaces (holographic consoles, data streams, orbital maps, radar screens), hard geometric outlines, cool high contrast (cyan and magenta lighting), symbolic elements (rocket silhouettes, orbital paths, satellite arrays, mission control big screens)
-8. 输出严格三字段格式，字段间空一行"""
+8. 画质锚定词：integrated_multimodal_description 里必须包含导演设计【画质】块的光质词/材质词/景深词（转成英文，如 side light, weathered metal, shallow depth of field），并可按风格补充 1-2 个画质修饰词（film grain 去AI味 / crisp details / soft rim light），禁止只堆 aesthetics 形容词
+9. 输出严格三字段格式，字段间空一行"""
 
 CONSTRAINT = ("The visuals play as off-screen voiceover narration while lips remain completely closed. "
               "No on-screen text, no subtitles, no captions.")
@@ -94,6 +95,15 @@ def enforce_constraints(prompt, is_pov):
         issues.append("POV 段缺第一人称标记")
     if "cyberpunk" not in p.lower() and "neon" not in p.lower():
         issues.append("缺 cyberpunk 风格标记")
+    # 画质锚定词：至少 1 个光质/材质/景深词（末尾追加，绝不插开头——保护风格锁前缀检查）
+    QUALITY_ANCHORS = ["light", "lighting", "depth of field", "focus", "grain", "texture",
+                       "material", "surface", "glossy", "matte", "weathered", "metal",
+                       "glass", "fabric", "rim", "shadow", "glow", "backlight", "diffuse"]
+    imd = p[p.find("integrated_multimodal_description"):p.find("overall_soundscape")] if "overall_soundscape" in p else p
+    found_q = [a for a in QUALITY_ANCHORS if a in imd.lower()]
+    if len(found_q) < 2:
+        p = p.rstrip() + "\n\nshot with soft cinematic lighting, subtle film grain, shallow depth of field"
+        issues.append("画质锚定词不足，末尾补默认三件套")
     return p, issues
 
 
