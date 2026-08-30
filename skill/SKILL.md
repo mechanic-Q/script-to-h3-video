@@ -63,8 +63,9 @@ description: 把中文文稿做成完整视频的五阶段流水线。Use when �
 动作：
   - **口播台词线**：分段原文 → `03_口播台词/shotXX.md`（纯原文，给 TTS，**不变**）
   - **导演设计线**：`python3 /home/lmr/comfy/director_llm.py 分镜清单_enhanced.json --out-dir 04_风格化文案`
-    - 阶段A：LLM 通读全部段 → `00_整体视觉方案.md`（视觉主线/场景系统/重复母题/色彩节奏/段间衔接）
-    - 阶段B：每段基于整体方案 + 本段台词 → `shotXX.md`（场景/主体/镜头/动作时间轴/风格渗透）
+    - 阶段A：LLM 通读全部段 → `00_整体视觉方案.md`（视觉主线/场景系统/重复母题/色彩节奏/**画面质感基调**/段间衔接）
+    - 阶段B：每段基于整体方案 + 本段台词 → `shotXX.md`（场景/主体/镜头/**画质**/动作时间轴/风格渗透）
+      - **画质块**（画质修饰词链）：每段光质锚定词 1 + 材质词 1 + 景深词 1，按 styles/ 风格从 quality-modifiers 决策表选
 校验：
   1. **事实保真**：导演设计含台词关键数字/专有名词（视觉锚点），口播台词原文不变
   2. **TTS 回读时长**：Index-TTS-2 合成一次 → ffprobe 回读真实时长 → 超 15s 段标记重切 → 回阶段一；通过 → `audio_XX.mp3` 落盘备用
@@ -80,7 +81,8 @@ description: 把中文文稿做成完整视频的五阶段流水线。Use when �
   - off-screen voiceover + lips closed（画面内无人声）
   - non_diegetic_music: N/A（BGM 后期叠加）
   - 事实锚点保留（数字/名词在画面描述核对处）
-校验：三字段齐全 + off-screen 约束 + POV/非 POV 标记正确
+  - **画质锚定词**：imd 必须含导演设计【画质】块的光/材质/景深词；不足自动末尾补默认三件套（绝不插开头——保护风格锁前缀检查）
+校验：三字段齐全 + off-screen 约束 + POV/非 POV 标记正确 + 画质锚定词
 
 ### 阶段五：生成 + 合成
 输入：`prompt_XX.json` + `audio_XX.mp3`
@@ -91,7 +93,7 @@ description: 把中文文稿做成完整视频的五阶段流水线。Use when �
   3. 合成：`python3 compose_final.py <480P目录> <05_TTS语音> <07_成片> --bgm <BGM.mp3> --bgm-volume 0.25`
   4. 字幕烧录（可选）：ASS 底部白字黑描边 → `ffmpeg -vf "ass=subtitles.ass"`（见踩坑 10）
 产出：最终成片 + `verify_output.py` 验收报告
-校验（verify_output.py，六项）：文件/时长/分辨率/三字段/风格锁一致/切点不在句中；失败段自动重跑（限 2-3 次）
+校验（verify_output.py，十项）：文件/时长/分辨率/三字段/**画质链 quality_chain（仅提示不 FAIL，保护旧产物）**/风格锁一致/切点不在句中/连贯/信息点/音频对齐；失败段自动重跑（限 2-3 次）
 
 ### 发布闸门（不可跳过）
 - 产出：成片 + 验收报告 → 展示给用户（MEDIA: 路径）
@@ -218,7 +220,8 @@ python3 submit_accel.py <start> <end> <项目>/06_H3prompt --script <稿子.md>
 - `ui2api.py` — UI 工作流 → API prompt 转换器（跳 Label/Bypasser、保留 Seed、widget/link 正确映射）
 - `submit_accel.py` — 阶段五：串行生成（powershell 桥接 + 主链路裁剪 + 模型名修正 + **只拷本次 prompt_id 输出** + **`--script <稿子.md>` 自适应 480P 输出位置与文件名前缀**）
 - `cleanup_480p.py` — 阶段五辅助：隔离 480P 中旧项目残留（按时间戳，移入 480P_旧项目残留/）
-- `verify_output.py` — 阶段五：验收脚本（六项检查 + 报告）
+- `verify_output.py` — 阶段五：验收脚本（十项检查 + 报告，含画质链 quality_chain）
+- `pipeline_contract.py` — 流水线契约：环节间只传文件（强制）+ 产出落盘标记
 - `tts_batch.py` — 阶段三：Index-TTS-2 批量配音（manifest + 声线）
 - `compose_final.py` — 阶段五：拼接成片（逐段合并视频+音频 → concat → BGM 叠加）
 
