@@ -20,6 +20,7 @@ def main():
     ap.add_argument("output_dir")
     ap.add_argument("--start", type=int, default=1)
     ap.add_argument("--end", type=int, default=9999)
+    ap.add_argument("--engine", choices=("2", "2.5"), default="2.5", help="IndexTTS engine (default 2.5)")
     args = ap.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
@@ -57,7 +58,7 @@ def main():
     print(f"待生成 {len(batch_lines)} 段音频 → {args.output_dir}")
     print(f"声线: {args.voice_ref}")
     cmd = [TTS_ENV, "-m", TTS_MOD, "batch", "--batch-file", manifest,
-           "--voice", args.voice_ref]
+           "--voice", args.voice_ref, "--engine", args.engine]
     r = subprocess.run(cmd, cwd="/home/lmr/index-tts", capture_output=True, text=True,
                        timeout=3600)
     print(r.stdout[-800:])
