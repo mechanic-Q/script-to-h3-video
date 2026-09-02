@@ -21,6 +21,8 @@ def main():
     ap.add_argument("--start", type=int, default=1)
     ap.add_argument("--end", type=int, default=9999)
     ap.add_argument("--engine", choices=("2", "2.5"), default="2.5", help="IndexTTS engine (default 2.5)")
+    ap.add_argument("--no-passion", action="store_true",
+                    help="关闭 E2 模仿标准配方（默认开启：本人音色+目标情绪参考 emotion_weight 0.5 + 语速 0.88 + 收紧采样）")
     args = ap.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
@@ -45,7 +47,15 @@ def main():
         text = re.sub(r"^#.*$", "", text, flags=re.MULTILINE).strip()
         if not text:
             continue
-        batch_lines.append(json.dumps({"text": text, "output": out}, ensure_ascii=False))
+        batch_lines.append(json.dumps({
+            "text": text, "output": out,
+            "voice": os.path.abspath(args.voice_ref),
+            **({
+                "emotion_audio": "/home/lmr/qmr_content_creator/private/voice/references/passion-emotion-reference.wav",
+                "emotion_weight": 0.5, "duration_factor": 0.88,
+                "temperature": 0.7, "top_p": 0.7, "top_k": 20,
+            } if not args.no_passion else {}),
+        }, ensure_ascii=False))
 
     if not batch_lines:
         print("无待生成段（全部已存在或超出范围）")
@@ -57,9 +67,13 @@ def main():
 
     print(f"待生成 {len(batch_lines)} 段音频 → {args.output_dir}")
     print(f"声线: {args.voice_ref}")
+    env = dict(os.environ)
+    if args.engine == "2.5":
+        # 显式指定 2.5 权重目录，否则 cli fallback 到 engine 2 权重（SKILL.md 实测坑）
+        env["INDEXTTS2_MODEL_DIR"] = "/home/lmr/index-tts/checkpoints_2_5"
     cmd = [TTS_ENV, "-m", TTS_MOD, "batch", "--batch-file", manifest,
            "--voice", args.voice_ref, "--engine", args.engine]
-    r = subprocess.run(cmd, cwd="/home/lmr/index-tts", capture_output=True, text=True,
+    r = subprocess.run(cmd, cwd="/home/lmr/index-tts", env=env, capture_output=True, text=True,
                        timeout=3600)
     print(r.stdout[-800:])
     if r.stderr:

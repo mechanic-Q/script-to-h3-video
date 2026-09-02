@@ -222,7 +222,7 @@ python3 submit_accel.py <start> <end> <项目>/06_H3prompt --script <稿子.md>
 - `cleanup_480p.py` — 阶段五辅助：隔离 480P 中旧项目残留（按时间戳，移入 480P_旧项目残留/）
 - `verify_output.py` — 阶段五：验收脚本（十项检查 + 报告，含画质链 quality_chain）
 - `pipeline_contract.py` — 流水线契约：环节间只传文件（强制）+ 产出落盘标记
-- `tts_batch.py` — 阶段三：Index-TTS-2 批量配音（manifest + 声线）
+- `tts_batch.py` — 阶段三：Index-TTS-2.5 批量配音（manifest + 声线）。**默认按 E2 模仿标准配方**（2026-08-31 定稿）：本人音色 expressive-reference + 目标情绪参考 passion-emotion-reference weight 0.5 + duration_factor 0.88 + temperature 0.7/top_p 0.7/top_k 20；`--no-passion` 关闭配方；engine 2.5 时自动注入 `INDEXTTS2_MODEL_DIR=checkpoints_2_5` 防 fallback。详见 `comfyui-agent-calling/references/index-tts2-batch-cli.md`
 - `compose_final.py` — 阶段五：拼接成片（逐段合并视频+音频 → concat → BGM 叠加）
 
 ## 参考
