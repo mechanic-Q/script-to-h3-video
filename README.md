@@ -1,3 +1,17 @@
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="script-to-h3-video：中文口播稿经分段、分镜增强、导演设计、H3 prompt、生成合成五阶段，产出 480×864 竖版成片">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/引擎-ComfyUI_%2B_MiniMax_H3-f0a832" alt="引擎：ComfyUI + MiniMax H3">
+  &nbsp;
+  <img src="https://img.shields.io/badge/配音-Index--TTS--2-f0a832" alt="配音：Index-TTS-2">
+  &nbsp;
+  <img src="https://img.shields.io/badge/规格-480×864_竖版-f0a832" alt="输出规格 480×864 竖版">
+  &nbsp;
+  <img src="https://img.shields.io/badge/License-Proprietary_Source--Available-e85d3d" alt="Proprietary Source-Available">
+</p>
+
 # script-to-h3-video
 
 把中文文稿 → 完整视频的五阶段流水线（H3 视频生成）。
