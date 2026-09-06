@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1200" height="340" viewBox="0 0 1200 340"
+     role="img" aria-labelledby="s3-title s3-desc">
+  <title id="s3-title">script-to-h3-video — 中文文稿到完整视频的五阶段流水线</title>
+  <desc id="s3-desc">左侧为项目名与一句话介绍：中文口播稿经分段、分镜、导演设计、H3 提示词与生成合成五个阶段产出 480×864 竖版成片。右侧为一个竖版视频帧示意与五阶段清单，每阶段标注对应脚本。</desc>
+
+  <rect width="1200" height="340" rx="26" fill="#14100b"/>
+
+  <!-- ===== 左：标题块 ===== -->
+  <g id="title-block" transform="translate(64 0)">
+    <text x="0" y="84" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="16" letter-spacing="1.5" fill="#f0a832">SCRIPT → STORYBOARD → DIRECTOR → H3 → VIDEO</text>
+
+    <text x="0" y="138" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="40" font-weight="700" fill="#f0e9dc">script-to-h3-video</text>
+
+    <text x="0" y="186" font-family="-apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif"
+          font-size="22" fill="#cfc4b0">中文口播稿进，成片出——五阶段本地 AI 视频流水线。</text>
+    <text x="0" y="218" font-family="-apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif"
+          font-size="22" fill="#cfc4b0">LLM 导演设计 + H3 三字段 prompt，风格成对可换。</text>
+
+    <text x="0" y="266" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="16" fill="#a89a85">ComfyUI · MiniMax H3 · Index-TTS-2 · FFmpeg</text>
+    <text x="0" y="294" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="16" fill="#a89a85">480×864 竖版 · 三种风格锁 · 验收量化校验</text>
+  </g>
+
+  <!-- ===== 右：竖版帧 + 五阶段 ===== -->
+  <g id="stage-board">
+    <!-- 竖版帧 480:864 ≈ 150:270 -->
+    <rect x="648" y="40" width="150" height="266" rx="10" fill="#201a12" stroke="#3a3020"/>
+    <rect x="658" y="50" width="130" height="246" rx="6" fill="#2a2216"/>
+    <!-- 画面示意：山形 + 太阳 -->
+    <circle cx="723" cy="96" r="14" fill="#f0a832" opacity="0.8"/>
+    <path d="M 658 216 L 700 160 L 730 196 L 756 168 L 788 216 Z" fill="#4a3a22"/>
+    <!-- 字幕条 -->
+    <rect x="666" y="240" width="114" height="14" rx="3" fill="#f0e9dc" opacity="0.9"/>
+    <rect x="676" y="258" width="94" height="14" rx="3" fill="#f0e9dc" opacity="0.75"/>
+    <text x="723" y="288" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="12" fill="#a89a85" text-anchor="middle">480×864 · 字幕限下1/3</text>
+
+    <!-- 五阶段列 -->
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+      <g>
+        <circle cx="850" cy="66" r="13" fill="#f0a832"/><text x="850" y="71" font-size="14" font-weight="700" fill="#14100b" text-anchor="middle">1</text>
+        <text x="876" y="64" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif" font-size="17" fill="#f0e9dc">分段</text>
+        <text x="928" y="64" font-size="14" fill="#a89a85">segment_script · ≤70字/15s</text>
+      </g>
+      <g>
+        <circle cx="850" cy="118" r="13" fill="#f0a832"/><text x="850" y="123" font-size="14" font-weight="700" fill="#14100b" text-anchor="middle">2</text>
+        <text x="876" y="116" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif" font-size="17" fill="#f0e9dc">分镜增强</text>
+        <text x="954" y="116" font-size="14" fill="#a89a85">storyboard_enhancer</text>
+      </g>
+      <g>
+        <circle cx="850" cy="170" r="13" fill="#f0a832"/><text x="850" y="175" font-size="14" font-weight="700" fill="#14100b" text-anchor="middle">3</text>
+        <text x="876" y="168" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif" font-size="17" fill="#f0e9dc">导演设计</text>
+        <text x="954" y="168" font-size="14" fill="#a89a85">director_llm + tts_batch</text>
+      </g>
+      <g>
+        <circle cx="850" cy="222" r="13" fill="#f0a832"/><text x="850" y="227" font-size="14" font-weight="700" fill="#14100b" text-anchor="middle">4</text>
+        <text x="876" y="220" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif" font-size="17" fill="#f0e9dc">H3 prompt</text>
+        <text x="968" y="220" font-size="14" fill="#a89a85">enforce_constraints 校验</text>
+      </g>
+      <g>
+        <circle cx="850" cy="274" r="13" fill="#e85d3d"/><text x="850" y="279" font-size="14" font-weight="700" fill="#14100b" text-anchor="middle">5</text>
+        <text x="876" y="272" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif" font-size="17" fill="#f0e9dc">生成合成</text>
+        <text x="954" y="272" font-size="14" fill="#a89a85">ComfyUI + compose_final</text>
+      </g>
+      <line x1="850" y1="79" x2="850" y2="105" stroke="#3a3020" stroke-width="2"/>
+      <line x1="850" y1="131" x2="850" y2="157" stroke="#3a3020" stroke-width="2"/>
+      <line x1="850" y1="183" x2="850" y2="209" stroke="#3a3020" stroke-width="2"/>
+      <line x1="850" y1="235" x2="850" y2="261" stroke="#3a3020" stroke-width="2"/>
+    </g>
+  </g>
+</svg>
